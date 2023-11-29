@@ -1,0 +1,582 @@
+package hellovanta;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class vantatest 
+{
+	
+
+	public static void main(String[] args) 
+	{
+		  String playerid = "Y00NJAEHYUN";
+		  double gamesplayed=2227.0;
+	      double kd =4.03;
+	      double avgdmg=446.1;
+	      double dis=2400;
+	      double avgtime=12.1;
+	      double avgheal=2.1;
+	      double avgboost=2.9;
+	      double totalheal = avgheal+avgboost;
+	      
+	    
+	      int exp = getexp(gamesplayed); //game exp
+	      int kdrate = getkdrate(kd); //kills
+	      int avgrate = getavgrate(avgdmg); //damage
+	      int disrate = getavgdis(dis); //map utilization
+	      int timerate = getavgtime(avgtime);//survival timerate
+	      int healrate = getavgheal(avgheal,avgboost);//heal item usage
+	      int total = exp+kdrate+avgrate+disrate+timerate+healrate;
+	      String tier = checkexp(total);
+	  
+	      
+	      
+	      int[] killarr = {1,kdrate};
+	      int[] dmgarr = {2,avgrate};
+	      int[] disarr = {3,disrate};
+	      int[] timearr = {4,timerate,};
+	      int[] healarr = {5,healrate,};
+	      
+	      
+	      int[] arr = {killarr[1],dmgarr[1],disarr[1],timearr[1],healarr[1]};
+	      int[] arr2 = {killarr[0],dmgarr[0],disarr[0],timearr[0],healarr[0]};
+	      
+	      
+	      getMax(arr,arr2);
+	      
+	      /*
+	      for(int i=0; i<arr.length; i=i+1)
+	      {
+	    	 System.out.println(arr[i]);
+	      }
+	      
+	      System.out.println(" ");
+	      
+	      for(int i=0; i<arr.length; i=i+1)
+	      {
+	    	 System.out.println(arr2[i]);
+	      }
+	      */
+	      
+	      
+String[] nametag1 = {"처치형","공격형","탐험형","생존형","치유형"};	
+String[] nametag2 = {"사냥꾼","공격수","모험가","전략가","치유가"};
+	    
+String name = getMBTI(arr2,nametag1,nametag2);
+	      
+	  
+	      
+	System.out.println(playerid +"\n");
+	  
+	System.out.println("TIER: "+tier+"\n");
+	      
+	System.out.println("플레이한 게임 수: "+gamesplayed);
+	System.out.println("K/D: "+kd);
+	System.out.println("평균 피해량: "+avgdmg);
+	System.out.println("평균 이동거리: "+dis+"m");
+	System.out.println("평균 생존시간: "+avgtime+"분");
+	System.out.println("평균 회복 아이템 사용: "+totalheal+"개"+"\n");	  
+    System.out.println("플레이 스타일: "+name);
+	  
+	analyzeplayer(arr,arr2);
+	    
+	      
+	}
+	public static String checkexp(int total)
+	{
+	    String tier=" ";
+		
+		if(total>=0 && total<50)
+		{
+			tier = "뉴비";
+		}
+		else if(total>=50 && total<100)
+		{
+			tier = "뉴비";
+		}
+		else if(total>=100 && total<150)
+		{
+			tier = "D-";
+		}
+		else if(total>=150 && total<200)
+		{
+			tier = "D+";
+		}
+		else if(total>=200 && total<250)
+		{
+			tier = "C-";
+		}
+		else if(total>=250 && total<300)
+		{
+			tier = "C+";
+		}
+		else if(total>=300 && total<350)
+		{
+			tier = "B-";
+		}
+		else if(total>=350 && total<400)
+		{
+			tier = "B+";
+		}
+		else if(total>=400 && total<450)
+		{
+			tier = "A-";
+		}
+		else if(total>=450 && total<500)
+		{
+			tier = "A+";
+		}
+		else if(total>=500 && total<550)
+		{
+			tier = "S";
+		}
+		else if(total>=550 && total<600)
+		{
+			tier = "SS";
+		}
+		
+		return tier;
+		
+	}
+	
+	public static void  analyzeplayer(int[] arr,int[] arr2)
+	{
+		char[] tags = {'K','D','M','T','H'};
+		
+		int a=arr2[0];
+		int b=arr2[1];
+		int c=arr2[3];
+		int d=arr2[4];
+		
+		
+		char maxtag1 = tags[a-1];
+		char maxtag2 = tags[b-1];
+		char mintag1 = tags[c-1];
+		char mintag2 = tags[d-1];
+		
+		 Map<String, String> feedbackMap = new HashMap<>();
+	        feedbackMap.put("KD", "전투에서의 강인함과 적을 처치하는 능력이 뛰어납니다."+"\n"+"좋은 전략과 타이밍으로 적을 격파하는 능력이 뛰어납니다.");
+	        feedbackMap.put("KT", "적들과의 전투에서 승리한 후에도 생존하는 능력이 뛰어납니다."+"\n"+"적극적인 전투 후 균형 있는 위치를 안정적으로 유지합니다.");
+	        feedbackMap.put("KM", "적을 처치하면서도 많은 지역을 이동하고 있습니다."+"\n"+"좋은 전략과 빠른 움직임으로 적들을 발견하고 신속히 처리하는 능력이 뛰어납니다.");
+	        feedbackMap.put("KH", "전투 후 빠르게 회복하여 다음 전투에 대비하는 능력이 뛰어납니다."+"\n"+ "효과적인 회복 아이템 사용을 잘 유지합니다.");
+	        feedbackMap.put("DT", "고등한 데미지를 주면서도 잘 살아남는 능력이 있습니다."+"\n"+"하지만 방심하지 말고 딜을 중시하면서도 생존에 주의하세요.");
+	        feedbackMap.put("DM", "적들에게 데미지를 주면서 지역을 자주 변경합니다."+"\n"+"빠른 이동으로 적들을 찾아내고 격파합니다.");
+	        feedbackMap.put("DH", "높은 딜을 유지하면서도 전투 후 회복을 잘 하는 능력이 있습니다."+"\n"+"전략적인 회복 아이템 사용을 유지하세요.");
+	        feedbackMap.put("TM", "긴 시간을 살아남으면서도 많은 지역을 이동합니다."+"\n"+"전략적인 움직임과 생존력을 유지하는 능력이 뛰어납니다.");
+	        feedbackMap.put("TH", "오랜 시간 동안 살아있으면서도 효과적으로 회복을 합니다."+"\n"+"생존과 회복 능력을 유지하는 능력이 뛰어납니다.");
+	        feedbackMap.put("MH", "많은 지역을 이동하면서도 효과적으로 회복을 합니다."+"\n"+"이동과 회복을 균형 있게 유지하세요.");
+		
+	        String feedbackKey = String.valueOf(maxtag1) + String.valueOf(maxtag2);
+	        String feedback = feedbackMap.get(feedbackKey);
+
+	        String reversedFeedbackKey = String.valueOf(maxtag2) + String.valueOf(maxtag1);
+	        String reversedFeedback = feedbackMap.get(reversedFeedbackKey);
+
+	        if (feedback != null) {
+	            System.out.println("\n"+feedback);
+	        } 
+	        else if (reversedFeedback != null) 
+	        {
+	            System.out.println("\n"+reversedFeedback);
+	        }
+	        
+	        feedbackMap.put("KD", "킬과 딜이 낮아서 적극적인 전투를 피하는 경향이 있어요. 적을 찾아나가는 것보다는 전투를 회피하거나 일방적인 전투에 참여하지 않는 것 같은데,"+"\n"+"좀 더 적극적으로 적을 공략하고 전투에 참여하는 연습을 해보는 것이 좋을 것 같아요.");
+	        feedbackMap.put("KT", "킬을 따내지 못하면서도 전투에서 생존력이 부족한 것 같아 보입니다. 전투 시 적절한 위치 선정과 생존을 위한 전략을 강화해보세요."+"\n"+" 전투를 피하지 않고 생존하는 방법을 고민해보는 것이 도움이 될 것입니다.");
+	        feedbackMap.put("KM", "킬을 따내지 못하면서 이동 거리도 적은 편이군요. 적들을 향해 더 적극적으로 이동하고 전투에 참여하는 연습을 해보세요."+"\n"+"전투와 이동의 균형을 맞추며 전략적인 이동을 연마하는 것이 중요합니다.");
+	        feedbackMap.put("KH", "킬을 따내지 못하면서도 전투 후의 회복 능력이 부족한 것 같아요."+"\n"+"전투 후 적절한 회복을 고려하는 연습을 해보면 좋을 것 같습니다.");
+	        feedbackMap.put("DT", "딜량이 부족한데도 생존 시간이 짧은 편입니다. 딜을 늘리면서도 적절한 전투에서 생존하는 연습을 해보세요."+"\n"+"딜량과 생존력을 조화롭게 향상시키는 것이 중요합니다.");
+	        feedbackMap.put("DM", "딜을 유지하면서도 적절한 위치로의 이동이 부족해 보입니다. 딜과 이동의 균형을 맞추며, "+"\n"+"딜량을 유지하면서 전투에 더 적극적으로 참여하는 방법을 고민해보세요. 적과의 상황에서 유연하게 움직이는 연습이 필요해 보입니다.");
+	        feedbackMap.put("DH", "딜을 따내지 못하면서도 전투 후의 회복 능력이 부족한 것 같아요."+"\n"+"딜과 함께 효과적인 회복 아이템 사용을 통해 생존력을 향상시키는 연습이 필요할 것 같아요.");
+	        feedbackMap.put("TM", "생존 시간과 이동 거리가 부족한 편이군요. 생존을 유지하면서 적절한 이동을 해보는 연습이 필요해 보입니다."+"\n"+"전투 시 적절한 위치로 이동하고 생존하는 방법을 고민해보세요.");
+	        feedbackMap.put("TH", "생존 시간이 짧으면서도 회복 능력이 부족해 보입니다."+"\n"+"생존을 유지하면서 효과적인 회복 아이템 사용을 통해 생존력을 향상시키는 연습이 필요할 것 같아요.");
+	        feedbackMap.put("MH", "이동 거리와 회복 능력이 부족한 편이군요. 더 많은 지역을 이동하면서도 효과적으로 회복하는 연습을 해보세요."+"\n"+"적절한 이동과 회복을 유지하면 더 나은 결과를 얻을 수 있을 거예요.");
+
+		
+	        String feedbackKey2 = String.valueOf(mintag1) + String.valueOf(mintag2);
+	        String feedback2 = feedbackMap.get(feedbackKey2);
+	        
+	        String reversedFeedbackKey2 = String.valueOf(mintag2) + String.valueOf(mintag1);
+	        String reversedFeedback2 = feedbackMap.get(reversedFeedbackKey2);
+		
+	        if (feedback2 != null) {
+	            System.out.println("\n"+feedback2);
+	        } 
+	        else if (reversedFeedback2 != null) 
+	        {
+	            System.out.println("\n"+reversedFeedback2);
+	        }
+	        
+	        System.out.println();
+	        if(mintag1=='K'||mintag2=='K')
+	        {
+	        	System.out.println("추천영상: "+"https://youtu.be/pjTtkQEwhN0?si=fI4H-u9E6EB2fwFQ");
+	        }
+	        if(mintag1=='D'||mintag2=='D')
+	        {
+	        	System.out.println("추천영상: "+"https://www.youtube.com/watch?v=mLTQk7KGutA");
+	        }
+	        if(mintag1=='T'||mintag2=='T')
+	        {
+	        	System.out.println("추천영상: "+"https://www.youtube.com/watch?v=mjtdA6E8FKM");
+	        }
+	        if(mintag1=='M'||mintag2=='M')
+	        {
+	        	System.out.println("추천영상: "+"https://youtu.be/g-3GzvLy_XY?si=uIEYye1AUtDnVFQ3");
+	        }
+	        if(mintag1=='H'||mintag2=='H')
+	        {
+	        	System.out.println("추천영상: "+"https://youtu.be/lsHr2bLFBQI?si=OREAQKGw9vHWI8LC");
+	        }
+	        
+		
+		
+	}
+	
+	public static String getMBTI(int[] arr2,String[]name1,String[]name2)
+	{
+		String n1 = name1[arr2[0]-1];
+		String n2 = name2[arr2[1]-1];
+		String name = n1+" "+n2;
+		
+		return name;
+		
+		//System.out.println(n1 +" "+ n2);
+	}
+	
+	public static void getMax(int[] arr, int[] arr2)
+	{
+		
+		int temp=0;
+		int temp2=0;
+		
+		for(int x=0; x<arr.length; x=x+1)
+		{
+			for(int i=1; i<arr.length; i=i+1)
+			{
+				if(arr[i-1]<arr[i])
+				{
+					temp = arr[i-1];
+					arr[i-1] = arr[i];
+					arr[i] = temp;
+					
+					temp2 = arr2[i-1];
+					arr2[i-1] = arr2[i];
+					arr2[i] = temp2;
+				}
+			}
+		}
+		
+		/*
+		System.out.println(" ");
+		
+		for(int i=0; i<arr.length; i=i+1)
+		{
+			System.out.println(arr[i]);
+		}
+		
+    System.out.println(" ");
+		
+		for(int i=0; i<arr.length; i=i+1)
+		{
+			System.out.println(arr2[i]);
+		}
+		*/
+		
+		
+	}
+	
+	
+	public static int getexp(double gamesplayed)
+{
+    int exp=0;
+   
+    if(gamesplayed>=0 && gamesplayed<=50)
+    {
+        exp = 10;
+    }
+    else if(gamesplayed>=50 && gamesplayed<=200)
+    {
+        exp = 20;
+    }
+    else if(gamesplayed>=200 && gamesplayed<=400)
+    {
+        exp = 30;
+    }
+    else if(gamesplayed>=400 && gamesplayed<=600)
+    {
+        exp = 40;
+    }
+    else if(gamesplayed>=600 && gamesplayed<=800)
+    {
+        exp = 50;
+    }
+    else if(gamesplayed>=800 && gamesplayed<=1000)
+    {
+        exp = 60;
+    }
+    else if(gamesplayed>=1000 && gamesplayed<=1500)
+    {
+        exp = 70;
+    }
+    else if(gamesplayed>=1500 && gamesplayed<=2000)
+    {
+        exp = 80;
+    }
+    else if(gamesplayed>=2000 && gamesplayed<=3000)
+    {
+        exp = 90;
+    }
+    else if(gamesplayed>=3000)
+    {
+        exp = 100;
+    }
+   
+    return exp;
+}
+
+public static int getavgheal(double avgheal,double avgboost)
+{
+    double totalheal = avgheal + avgboost;
+    int healrate=0;
+   
+ if(0.0<=totalheal && totalheal<1.0)
+ {
+     healrate = 10;
+ }
+ else if(1.0<=totalheal && totalheal<1.5)
+ {
+     healrate = 20;
+ }
+ else if(1.5<=totalheal && totalheal<2.0)
+ {
+     healrate = 30;
+ }
+ else if(2.0<=totalheal && totalheal<2.5)
+ {
+     healrate = 40;
+ }
+ else if(2.5<=totalheal && totalheal<3.0)
+ {
+     healrate = 50;
+ }
+ else if(3.0<=totalheal && totalheal<3.5)
+ {
+     healrate = 60;
+ }
+ else if(3.5<=totalheal && totalheal<4.0)
+ {
+     healrate = 70;
+ }
+ else if(4.0<=totalheal && totalheal<5.0)
+ {
+     healrate = 80;
+ }
+ else if(5.0<=totalheal && totalheal<6.0)
+ {
+     healrate = 90;
+ }
+ else if(totalheal>=6.0)
+ {
+     healrate = 100;
+ }
+
+    return healrate;
+}
+
+public static int getavgtime(double avgtime)
+{
+    int timerate=0;
+ if(0.0<=avgtime && avgtime<1.0)
+ {
+     timerate = 10;
+ }
+ else if(1.0<=avgtime && avgtime<3.0)
+ {
+     timerate = 20;
+ }
+ else if(3.0<=avgtime && avgtime<5.0)
+ {
+     timerate = 30;
+ }
+ else if(5.0<=avgtime && avgtime<7.0)
+ {
+     timerate = 40;
+ }
+ else if(7.0<=avgtime && avgtime<9.0)
+ {
+     timerate = 50;
+ }
+ else if(9.0<=avgtime && avgtime<11.0)
+ {
+     timerate = 60;
+ }
+ else if(11.0<=avgtime && avgtime<13.0)
+ {
+     timerate = 70;
+ }
+ else if(13.0<=avgtime && avgtime<15.0)
+ {
+     timerate = 80;
+ }
+ else if(15.0<=avgtime && avgtime<17.0)
+ {
+     timerate = 90;
+ }
+ else if(avgtime>=17.0)
+ {
+     timerate = 100;
+ }
+    return timerate;
+}
+
+public static int getavgdis(double dis)
+{   int disrate=0;
+
+ if(0.0<=dis && dis<500.0)
+ {
+     disrate = 10;
+ }
+ else if(500.0<=dis && dis<1000.0)
+ {
+     disrate = 20;
+ }
+ else if(1000.0<=dis && dis<1250.0)
+ {
+     disrate = 30;
+ }
+ else if(1250.0<=dis && dis<1500.0)
+ {
+     disrate = 40;
+ }
+ else if(1500.0<=dis && dis<1750.0)
+ {
+     disrate = 50;
+ }
+ else if(1750.0<=dis && dis<2000.0)
+ {
+     disrate = 50;
+ }
+ else if(2000.0<=dis && dis<2250.0)
+ {
+     disrate = 60;
+ }
+ else if(2250.0<=dis && dis<2500.0)
+ {
+     disrate = 70;
+ }
+ else if(2500.0<=dis && dis<2750.0)
+ {
+     disrate = 80;
+ }
+ else if(2750.0<=dis && dis<3000.0)
+ {
+     disrate = 90;
+ }
+ else if(dis>=3000.0)
+ {
+     disrate = 100;
+ }
+    return disrate;
+}
+
+
+ public static int getavgrate(double avgdmg)
+{
+  int avgrate=0;
+   
+   if(0.0<=avgdmg && avgdmg<50.0)
+  {
+      avgrate = 10;
+  }
+    else if(50.0<=avgdmg && avgdmg<100.0)
+  {
+      avgrate = 20;
+  }
+     else if(100.0<=avgdmg && avgdmg<150.0)
+  {
+      avgrate = 30;
+  }
+      else if(150.0<=avgdmg && avgdmg<200.0)
+  {
+      avgrate = 40;
+  }
+      else if(200.0<=avgdmg && avgdmg<250.0)
+  {
+      avgrate = 50;
+  }
+      else if(250.0<=avgdmg && avgdmg<300.0)
+  {
+      avgrate = 60;
+  }
+     else if(300.0<=avgdmg && avgdmg<350.0)
+  {
+      avgrate = 60;
+  }
+     else if(350.0<=avgdmg && avgdmg<400.0)
+  {
+      avgrate = 70;
+  }
+     else if(400.0<=avgdmg && avgdmg<450.0)
+  {
+      avgrate = 80;
+  }
+     else if(450.0<=avgdmg && avgdmg<500.0)
+  {
+      avgrate = 90;
+  }
+     else if(avgdmg>=500.0)
+  {
+      avgrate = 100;
+  }
+  return avgrate;
+}
+
+public static int getkdrate(double kd)
+{
+  int kdrate=0;
+   
+    if(0.0<=kd&&kd<0.5)
+  {
+      kdrate = 10;
+  }
+  else if(0.5<=kd&&kd<1.0)
+  {
+      kdrate = 20;
+  }
+  else if(1.0<=kd&&kd<1.5)
+  {
+      kdrate = 30;
+  }
+  else if(1.5<=kd&&kd<2.0)
+  {
+      kdrate = 40;
+  }
+  else if(2.0<=kd&&kd<2.5)
+  {
+      kdrate = 50;
+  }
+  else if(2.5<=kd&&kd<3.0)
+  {
+      kdrate = 60;
+  }
+  else if(3.0<=kd&&kd<3.5)
+  {
+      kdrate = 70;
+  }
+  else if(3.5<=kd&&kd<4.0)
+  {
+      kdrate = 80;
+  }
+  else if(4.0<=kd&&kd<5.0)
+  {
+      kdrate = 90;
+  }
+  else if(kd>=5.0)
+  {
+      kdrate = 100;
+  }
+   
+  return kdrate;
+    }
+
+}
