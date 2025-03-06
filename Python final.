@@ -1,0 +1,389 @@
+import requests
+from bs4 import BeautifulSoup
+import math
+
+playerid = input("플레이어 이름을 입력하세요: ")
+#크롤링 데이터
+Info = []
+
+
+
+kdrate = 0
+avgrate = 0
+disrate = 0
+timerate = 0
+healrate = 0
+exp = 0
+name = ''
+
+gamesplayed = ''
+kd = ''
+avgdmg = ''
+dis = '1'
+avgtime = '1'
+avgheal = '1'
+avgboost = '1'
+tier = ''
+total = '1'
+Walkeddisformath = ''
+
+
+nametag1 = ["처치형", "공격형", "탐험형", "생존형", "치유형"]
+nametag2 = ["사냥꾼", "공격수", "모험가", "전략가", "치유가"]
+
+url='https://pubg-stats.com/profile/' + playerid
+
+hdr = {'Accept-Language': 'ko_KR,en;q=0.8', 'User-Agent': ('Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Mobile Safari/537.36')}
+req = requests.get(url, headers=hdr)
+html = req.text
+soup = BeautifulSoup(html, 'html.parser')
+
+# 소환사 이름 크롤링
+for i in soup.select('li'):
+    SummonerName = i.text
+    
+# 언랭 판별용 티어 크롤링
+TierUnranked = soup.select('div.invalid-feedback, li')
+
+for i in soup.select('span', {'_msttexthash' : '16107'}):
+    Info.append(i.text)
+    
+Kill = Info[0]
+Death = Info[1]
+Longlive = Info[2]
+Longliveformath = (Longlive[0] + Longlive[1])
+avgtime = Longliveformath
+gamesplayed = (int(Info[3]) + int(Info[4]))
+Win = Info[3]
+Fail = Info[4]
+Headshot = Info[5]
+Asist = Info[6]
+Teamkill = Info[7]
+Suicide = Info[8]
+Longestkill = Info[9]
+Roadkill = Info[10]
+Vehicledestroy = Info[11]
+Knockout = Info[12]
+Boostedused = Info[13]
+Healself = Info[14]
+Healselfformath = (math.trunc((int(Healself)/int(gamesplayed))*100))
+totalheal = Healselfformath
+Teamrevi = Info[15]
+weaponpicked = Info[16]
+Damagegiven = Info[17]
+avgdmg = (math.trunc(int(Damagegiven)/int(gamesplayed)))
+Drivendis = Info[18]
+Swandis = Info[19]
+Walkeddis = Info[20]
+Walkeddisformath = (Walkeddis[0] + Walkeddis[1] + Walkeddis[2])
+dis = (math.trunc((int(Walkeddisformath)/int(gamesplayed))*100))
+dis = dis*100
+kd = (math.trunc((int(Win)/int(Fail))*100))
+
+totalheal = avgheal + avgboost
+    
+'''print(SummonerName)
+print(TierUnranked)
+print(Info)'''
+'''
+print(gamesplayed)
+print(avgdmg)
+print(Walkeddis)
+print(Damagegiven)
+print(kd)
+print(dis)
+print(Walkeddisformath)
+'''
+
+def checkexp(total):
+   tier = " "
+   if int(total) >= 0 and int(total) < 50:
+       tier = "뉴비"
+   elif int(total) >= 50 and int(total) < 100:
+       tier = "뉴비"
+   elif int(total) >= 100 and int(total) < 150:
+       tier = "D-"
+   elif int(total) >= 150 and int(total) < 200:
+       tier = "D+"
+   elif int(total) >= 200 and int(total) < 250:
+       tier = "C-"
+   elif int(total) >= 250 and int(total) < 300:
+       tier = "C+"
+   elif int(total) >= 300 and int(total) < 350:
+       tier = "B-"
+   elif int(total) >= 350 and int(total) < 400:
+       tier = "B+"
+   elif int(total) >= 400 and int(total) < 450:
+       tier = "A-"
+   elif int(total) >= 450 and int(total) < 500:
+       tier = "A+"
+   elif int(total) >= 500 and int(total) < 550:
+       tier = "S"
+   elif int(total) >= 550 and int(total) < 600:
+       tier = "SS"
+
+
+
+def getMBTI(arr2, name1, name2):
+   n1 = name1[arr2[0]-1]
+   n2 = name2[arr2[1]-1]
+   name = n1 + " " + n2
+
+
+def getMax(arr, arr2):
+   for x in range(len(arr)):
+       for i in range(1, len(arr)):
+           if arr[i-1] < arr[i]:
+               temp = arr[i-1]
+               arr[i-1] = arr[i]
+               arr[i] = temp
+               temp2 = arr2[i-1]
+               arr2[i-1] = arr2[i]
+               arr2[i] = temp2
+
+def getexp(gamesplayed):
+   exp = 0
+   if int(gamesplayed) >= 0 and int(gamesplayed) <= 50:
+       exp = 10
+   elif int(gamesplayed) >= 50 and int(gamesplayed) <= 200:
+       exp = 20
+   elif int(gamesplayed) >= 200 and int(gamesplayed) <= 400:
+       exp = 30
+   elif int(gamesplayed) >= 400 and int(gamesplayed) <= 600:
+       exp = 40
+   elif int(gamesplayed) >= 600 and int(gamesplayed) <= 800:
+       exp = 50
+   elif int(gamesplayed) >= 800 and int(gamesplayed) <= 1000:
+       exp = 60
+   elif int(gamesplayed) >= 1000 and int(gamesplayed) <= 1500:
+       exp = 70
+   elif int(gamesplayed) >= 1500 and int(gamesplayed) <= 2000:
+       exp = 80
+   elif int(gamesplayed) >= 2000 and int(gamesplayed) <= 3000:
+       exp = 90
+   elif int(gamesplayed) >= 3000:
+       exp = 100
+
+
+def getavgheal(avgheal, avgboost):
+   totalheal = avgheal + avgboost
+   healrate = 0
+   if 0.0 <= int(totalheal) and int(totalheal) < 1.0:
+       healrate = 10
+   elif 1.0 <= int(totalheal) and int(totalheal) < 1.5:
+       healrate = 20
+   elif 1.5 <= int(totalheal) and int(totalheal) < 2.0:
+       healrate = 30
+   elif 2.0 <= int(totalheal) and int(totalheal) < 2.5:
+       healrate = 40
+   elif 2.5 <= int(totalheal) and int(totalheal) < 3.0:
+       healrate = 50
+   elif 3.0 <= int(totalheal) and int(totalheal) < 3.5:
+       healrate = 60
+   elif 3.5 <= int(totalheal) and int(totalheal) < 4.0:
+       healrate = 70
+   elif 4.0 <= int(totalheal) and int(totalheal) < 5.0:
+       healrate = 80
+   elif 5.0 <= int(totalheal) and int(totalheal) < 6.0:
+       healrate = 90
+   elif int(totalheal) >= 6.0:
+       healrate = 100
+
+
+def getavgtime(avgtime):
+   timerate = 0
+   if 0.0 <= int(avgtime) and int(avgtime) < 1.0:
+       timerate = 10
+   elif 1.0 <= int(avgtime) and int(avgtime) < 3.0:
+       timerate = 20
+   elif 3.0 <= int(avgtime) and int(avgtime) < 5.0:
+       timerate = 30
+   elif 5.0 <= int(avgtime) and int(avgtime) < 7.0:
+       timerate = 40
+   elif 7.0 <= int(avgtime) and int(avgtime) < 9.0:
+       timerate = 50
+   elif 9.0 <= int(avgtime) and int(avgtime) < 11.0:
+       timerate = 60
+   elif 11.0 <= int(avgtime) and int(avgtime) < 13.0:
+       timerate = 70
+   elif 13.0 <= int(avgtime) and int(avgtime) < 15.0:
+       timerate = 80
+   elif 15.0 <= int(avgtime) and int(avgtime) < 17.0:
+       timerate = 90
+   elif int(avgtime) >= 17.0:
+       timerate = 100
+
+
+def getavgdis(dis):
+   disrate = 0
+   if 0.0 <= int(dis) and int(dis) < 500.0:
+       disrate = 10
+   elif 500.0 <= int(dis) and int(dis) < 1000.0:
+       disrate = 20
+   elif 1000.0 <= int(dis) and int(dis) < 1250.0:
+       disrate = 30
+   elif 1250.0 <= int(dis) and int(dis) < 1500.0:
+       disrate = 40
+   elif 1500.0 <= int(dis) and int(dis) < 1750.0:
+       disrate = 50
+   elif 1750.0 <= int(dis) and int(dis) < 2000.0:
+       disrate = 50
+   elif 2000.0 <= int(dis) and int(dis) < 2250.0:
+       disrate = 60
+   elif 2250.0 <= int(dis) and int(dis) < 2500.0:
+       disrate = 70
+   elif 2500.0 <= int(dis) and int(dis) < 2750.0:
+       disrate = 80
+   elif 2750.0 <= int(dis) and int(dis) < 3000.0:
+       disrate = 90
+   elif int(dis) >= 3000.0:
+       disrate = 100
+
+
+def getavgrate(avgdmg):
+   avgrate = 0
+   if 0.0 <= int(avgdmg) and int(avgdmg) < 50.0:
+       avgrate = 10
+   elif 50.0 <= int(avgdmg) and int(avgdmg) < 100.0:
+       avgrate = 20
+   elif 100.0 <= int(avgdmg) and int(avgdmg) < 150.0:
+       avgrate = 30
+   elif 150.0 <= int(avgdmg) and int(avgdmg) < 200.0:
+       avgrate = 40
+   elif 200.0 <= int(avgdmg) and int(avgdmg) < 250.0:
+       avgrate = 50
+   elif 250.0 <= int(avgdmg) and int(avgdmg) < 300.0:
+       avgrate = 60
+   elif 300.0 <= int(avgdmg) and int(avgdmg) < 350.0:
+       avgrate = 60
+   elif 350.0 <= int(avgdmg) and int(avgdmg) < 400.0:
+       avgrate = 70
+   elif 400.0 <= int(avgdmg) and int(avgdmg) < 450.0:
+       avgrate = 80
+   elif 450.0 <= int(avgdmg) and int(avgdmg) < 500.0:
+       avgrate = 90
+   elif int(avgdmg) >= 500.0:
+       avgrate = 100
+
+
+def getkdrate(kd):
+   kdrate = 0
+   if 0.0 <= int(kd) and int(kd) < 0.5:
+       kdrate = 10
+   elif 0.5 <= int(kd) and int(kd) < 1.0:
+       kdrate = 20
+   elif 1.0 <= int(kd) and int(kd) < 1.5:
+       kdrate = 30
+   elif 1.5 <= int(kd) and int(kd) < 2.0:
+       kdrate = 40
+   elif 2.0 <= int(kd) and int(kd) < 2.5:
+       kdrate = 50
+   elif 2.5 <= int(kd) and int(kd) < 3.0:
+       kdrate = 60
+   elif 3.0 <= int(kd) and int(kd) < 3.5:
+       kdrate = 70
+   elif 3.5 <= int(kd) and int(kd) < 4.0:
+       kdrate = 80
+   elif 4.0 <= int(kd) and int(kd) < 5.0:
+       kdrate = 90
+   elif int(kd) >= 5.0:
+       kdrate = 100
+       
+def analyzeplayer(arr, arr2):
+   tags = ['K', 'D', 'M', 'T', 'H']
+   a = arr2[0]
+   b = arr2[1]
+   c = arr2[3]
+   d = arr2[4]
+   maxtag1 = tags[a-1]
+   maxtag2 = tags[b-1]
+   mintag1 = tags[c-1]
+   mintag2 = tags[d-1]
+   feedbackMap = {
+       'KD': '전투에서의 강인함과 적을 처치하는 능력이 뛰어납니다.\n좋은 전략과 타이밍으로 적을 격파하는 능력이 뛰어납니다.',
+       'KT': '적들과의 전투에서 승리한 후에도 생존하는 능력이 뛰어납니다.\n적극적인 전투 후 균형 있는 위치를 안정적으로 유지합니다.',
+       'KM': '적을 처치하면서도 많은 지역을 이동하고 있습니다.\n좋은 전략과 빠른 움직임으로 적들을 발견하고 신속히 처리하는 능력이 뛰어납니다.',
+       'KH': '전투 후 빠르게 회복하여 다음 전투에 대비하는 능력이 뛰어납니다.\n효과적인 회복 아이템 사용을 잘 유지합니다.',
+       'DT': '고등한 데미지를 주면서도 잘 살아남는 능력이 있습니다.\n하지만 방심하지 말고 딜을 중시하면서도 생존에 주의하세요.',
+       'DM': '적들에게 데미지를 주면서 지역을 자주 변경합니다.\n빠른 이동으로 적들을 찾아내고 격파합니다.',
+       'DH': '높은 딜을 유지하면서도 전투 후 회복을 잘 하는 능력이 있습니다.\n전략적인 회복 아이템 사용을 유지하세요.',
+       'TM': '긴 시간을 살아남으면서도 많은 지역을 이동합니다.\n전략적인 움직임과 생존력을 유지하는 능력이 뛰어납니다.',
+       'TH': '오랜 시간 동안 살아있으면서도 효과적으로 회복을 합니다.\n생존과 회복 능력을 유지하는 능력이 뛰어납니다.',
+       'MH': '많은 지역을 이동하면서도 효과적으로 회복을 합니다.\n이동과 회복을 균형 있게 유지하세요.'
+   }
+   feedbackKey = str(maxtag1) + str(maxtag2)
+   feedback = feedbackMap.get(feedbackKey)
+   reversedFeedbackKey = str(maxtag2) + str(maxtag1)
+   reversedFeedback = feedbackMap.get(reversedFeedbackKey)
+   if feedback != None:
+       print("\n" + feedback)
+   elif reversedFeedback != None:
+       print("\n" + reversedFeedback)
+   feedbackMap['KD'] = '킬과 딜이 낮아서 적극적    전투를 피하는 경향이 있어요. 적을 찾아나가는 것보다는 전투를 회피하거나 일방적인 전투에 참여하지 않는 것 같은데,\n좀 더 적극적으로 적을 공략하고 전투에 참여하는 연습을 해보는 것이 좋을 것 같아요.'
+   feedbackMap['KT'] = '킬을 따내지 못하면서도 전투에서 생존력이 부족한 것 같아 보입니다. 전투 시 적절한 위치 선정과 생존을 위한 전략을 강화해보세요.\n전투를 피하지 않고 생존하는 방법을 고민해보는 것이 도움이 될 것   니다.'
+   feedbackMap['KM'] = '킬을 따내지 못하면서 이동 거리도 적은 편이군요. 적들을 향해 더 적극적으로 이동하고 전투에 참여하는 연습을 해보세요.\n전투와 이동의 균형을 맞추며 전략적인 이동을 연마하는 것이 중요합니다.'
+   feedbackMap['KH'] = '킬을 따내지 못하면서도 전투 후의 회복 능력이 부족한 것 같아요.\n전투 후 적절한 회복을 고려하는 연습을 해보면 좋을 것 같습니다.'
+   feedbackMap['DT'] = '딜량이 부족한데도 생존 시간이 짧은 편   니다. 딜을 늘리면서도 적절한 전투에서 생존하는 연습을 해보세요.\n딜량과 생존력을 조화롭게 향상시키는 것이 중요합니다.'
+   feedbackMap['DM'] = '딜을 유지하면서도 적절한 위치로의 이동이 부족해 보입니다. 딜과 이동의 균형을 맞추며,\n딜량을 유지하면서 전투에 더 적극적으로 참여하는 방법을 고민해보세요. 적과의 상황에서 유연하게 움직이는 연습이 필요해 보입니다.'
+   feedbackMap['DH'] = '딜을 따내지 못하면서도 전투 후의 회복 능력이 부족한 것 같아요.\n딜과 함께 효과적인 회복 아이템 사용을 통해 생존력을 향상시키는 연습이 필요할 것 같아요.'
+   feedbackMap['TM'] = '생존 시간과 이동 거리가 부족한 편이군요.    존을 유지하면서 적   한 이동을 해보는 연습이 필요해 보입니다.\n전투 시 적절한 위치로 이동하고    존하는 방법을 고민해보세요.'
+   feedbackMap['TH'] = '생존 시간이 짧   면서도 회복 능력이 부족해 보입니다.\n생존을 유지하면서 효과적인 회복 아이템 사용을 통해 생존력을 향상시키는 연습이 필요할 것 같아요.'
+   feedbackMap['MH'] = '이동 거리와    복 능력이 부족한 편이군요. 더 많은 지역을 이동하면서도 효과적으로 회복하는 연습을 해보세요.\n적절한    동과 회복을    지하면 더 나은 결과를 얻을 수 있을 거예요.'
+   feedbackKey2 = str(mintag1) + str(mintag2)
+   feedback2 = feedbackMap.get(feedbackKey2)
+   reversedFeedbackKey2 = str(mintag2) + str(mintag1)
+   reversedFeedback2 = feedbackMap.get(reversedFeedbackKey2)
+   if feedback2 != None:
+       print("\n" + feedback2)
+   elif reversedFeedback2 != None:
+       print("\n" + reversedFeedback2)
+   print()
+   if mintag1 == 'K' or mintag2 == 'K':
+       print("추천영상: " + "https://www.youtube.com/watch?v=pjTtkQEwhN0")
+   if mintag1 == 'D' or mintag2 == 'D':
+       print("추천영상: " + "https://www.youtube.com/watch?v=mLTQk7KGutA")
+   if mintag1 == 'T' or mintag2 == 'T':
+       print("추천영상: " + "https://www.youtube.com/watch?v=mjtdA6E8FKM")
+   if mintag1 == 'M' or mintag2 == 'M':
+       print("추천영상: " + "https://www.youtube.com/watch?v=g-3GzvLy_XY")
+   if mintag1 == 'H' or mintag2 == 'H':
+       print("추천영상: " + "https://www.youtube.com/watch?v=lsHr2bLFBQI")
+   
+
+killarr = [1, kdrate]
+dmgarr = [2, avgrate]
+disarr = [3, disrate]
+timearr = [4, timerate]
+healarr = [5, healrate]
+
+total = exp + kdrate + avgrate + disrate + timerate + healrate
+getexp(gamesplayed)
+getkdrate(kd)
+getavgrate(avgdmg)
+getavgdis(dis)
+getavgtime(avgtime)
+getavgheal(avgheal, avgboost)
+
+arr = [killarr[1], dmgarr[1], disarr[1], timearr[1], healarr[1]]
+arr2 = [killarr[0], dmgarr[0], disarr[0], timearr[0], healarr[0]]
+getMax(arr, arr2)
+
+checkexp(total)
+
+nametag1 = ["처치형", "공격형", "탐험형", "생존형", "치유형"]
+nametag2 = ["사냥꾼", "공격수", "모험가", "전략가", "치유가"]
+
+nametag11 = nametag1[arr2[0]]
+nametag22 = nametag2[arr2[1]]
+
+print("닉네임:" + playerid)
+print("TIER: " + tier)
+print("플레이한 게임 수: " + str(gamesplayed))
+print("K/D: " + str(kd))
+print("평균 피해량: " + str(avgdmg))
+print("평균 이동거리: " + str(dis) + "m")
+print("평균 생존시간: " + str(avgtime) + "분")
+print("평균 힐 아이템 사용 갯수: " + str(totalheal) + "개")
+print("플레이 스타일: " + name)
+getMBTI(arr2, nametag11, nametag22)
+analyzeplayer(arr, arr2)
